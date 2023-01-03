@@ -1,0 +1,51 @@
+---
+- name: Configuring Sonar Server
+  hosts: all
+  become: true
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Install Docker pre requirements
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop: "{{ docker_pre_requirements }}"
+
+    - name: Install Docker
+      script:
+        cmd: install-docker.sh
+        creates: /usr/bin/docker
+
+    - name: Add ubuntu user to Docker group
+      user:
+        name: ubuntu
+        groups: "{{ ['ubuntu', 'docker'] }}"
+        state: present
+        append: true
+
+    - name: Create sonar folder
+      file:
+        path: /usr/sonar
+        owner: root
+        group: root
+        state: directory
+
+    - name: Add files to host
+      copy:
+        src: "{{ item }}"
+        dest: /usr/sonar/docker-compose.yml
+      loop:
+        - docker-compose.yml
+
+    - name: Install pip dependencies
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop: "{{ pip_dependencies }}"
+
+    - name: Install Python Docker SDK
+      pip:
+        name: "{{ item }}"
+      loop: "{{ docker_compose_sdk_dependencies }}"

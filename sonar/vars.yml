@@ -1,0 +1,15 @@
+---
+docker_pre_requirements:
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+
+pip_dependencies:
+  - pip
+  - virtualenv
+
+docker_compose_sdk_dependencies:
+  - docker
+  - PyYAML
+  - docker-compose

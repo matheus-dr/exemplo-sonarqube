@@ -5,3 +5,6 @@ coveralls-upload.json
 phpunit.xml
 vendor/
 .docker/dbdata/*
+**/.terraform*
+**/*.pem
+**/terraform.tfstate*
